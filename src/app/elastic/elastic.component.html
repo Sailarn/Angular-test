@@ -1,56 +1,58 @@
-<div class="container">
-  <form action="javascript:void()" [formGroup]="Form" (submit)="onSubmit()">
-    <label for="first-name">First Name</label>
-    <input type="text" id="first-name" formControlName="firstName" />
-    <label for="last-name">Last Name</label>
-    <input type="text" id="last-name" formControlName="lastName" />
-    <label for="birth">Date</label>
-    <input type="date" formControlName="birth" />
-    <label for="mobile">Mobile</label>
-    <input type="number" formControlName="mobile" />
-    <label for="email">Email</label>
-    <input type="text" formControlName="email" />
-    <button type="submit">Send</button>
-  </form>
-</div>
-<button (click)="createBtn()">Create</button>
-<button (click)="retrieveBtn()">Retrieve</button>
-<button (click)="storeBTN()">Store</button>
-<button (click)="toggleData()">Show Data</button>
-<div *ngIf="showData">
-  <div *ngIf="!isEmpty; else empty">
-    <h1>Data:</h1>
-    <ul>
-      <li *ngFor="let item of this.l_state">
-        <h3>User id: {{ item.id }}</h3>
-        <ul>
-          <li>First Name: {{ item.info.first_name }}</li>
-          <li>Last Name: {{ item.info.last_name }}</li>
-          <li>Date of birth: {{ item.info.birth }}</li>
-          <li>Phone number: {{ item.info.mobile }}</li>
-          <li>Email Adress: {{ item.info.email }}</li>
-          <li>Was created: {{ item.info.created }}</li>
-        </ul>
-        <button (click)="deleteBtn(item.id)">Delete</button>
-        <button (click)="editBtn(item.id)">Edit</button>
-      </li>
-    </ul>
+<h1>Server status: {{ status }}</h1>
+<div class="app" *ngIf="this.isConnected">
+  <div class="container">
+    <form action="javascript:void()" [formGroup]="Form" (submit)="onSubmit()">
+      <label for="first-name">First Name</label>
+      <input type="text" id="first-name" formControlName="firstName" />
+      <label for="last-name">Last Name</label>
+      <input type="text" id="last-name" formControlName="lastName" />
+      <label for="birth">Date</label>
+      <input type="date" formControlName="birth" />
+      <label for="mobile">Mobile</label>
+      <input type="number" formControlName="mobile" />
+      <label for="email">Email</label>
+      <input type="text" formControlName="email" />
+      <button type="submit">Send</button>
+    </form>
   </div>
-  <ng-template #empty> No data to retrieve </ng-template>
-</div>
-<div *ngIf="isEdit" class="editForm">
-  <form action="javascript:void()" [formGroup]="editForm" (submit)="onEdit()">
-    <label for="first-name">First Name</label>
-    <input type="text" id="first-name" formControlName="firstName" />
-    <label for="last-name">Last Name</label>
-    <input type="text" id="last-name" formControlName="lastName" />
-    <label for="birth">Date</label>
-    <input type="date" formControlName="birth" />
-    <label for="mobile">Mobile</label>
-    <input type="number" formControlName="mobile" />
-    <label for="email">Email</label>
-    <input type="text" formControlName="email" />
-    <button type="submit">Send</button>
-  </form>
-  <button id="cancel" (click)="cancelEditing()">Cancel</button>
+  <button (click)="retrieveBtn()">Retrieve</button>
+  <button (click)="storeBTN()">Store</button>
+  <button (click)="toggleData()">Show Data</button>
+  <div *ngIf="showData">
+    <div *ngIf="!isEmpty; else empty">
+      <h1>Data:</h1>
+      <ul>
+        <li *ngFor="let item of this.l_state">
+          <h3>User id: {{ item.id }}</h3>
+          <ul>
+            <li>First Name: {{ item.info.first_name }}</li>
+            <li>Last Name: {{ item.info.last_name }}</li>
+            <li>Date of birth: {{ item.info.birth }}</li>
+            <li>Phone number: {{ item.info.mobile }}</li>
+            <li>Email Adress: {{ item.info.email }}</li>
+            <li>Was created: {{ item.info.created }}</li>
+          </ul>
+          <button (click)="deleteBtn(item.id)">Delete</button>
+          <button (click)="editBtn(item.id)">Edit</button>
+        </li>
+      </ul>
+    </div>
+    <ng-template #empty> No data to retrieve </ng-template>
+  </div>
+  <div *ngIf="isEdit" class="editForm">
+    <form action="javascript:void()" [formGroup]="editForm" (submit)="onEdit()">
+      <label for="first-name">First Name</label>
+      <input type="text" id="first-name" formControlName="firstName" />
+      <label for="last-name">Last Name</label>
+      <input type="text" id="last-name" formControlName="lastName" />
+      <label for="birth">Date</label>
+      <input type="date" formControlName="birth" />
+      <label for="mobile">Mobile</label>
+      <input type="number" formControlName="mobile" />
+      <label for="email">Email</label>
+      <input type="text" formControlName="email" />
+      <button type="submit">Send</button>
+    </form>
+    <button id="cancel" (click)="cancelEditing()">Cancel</button>
+  </div>
 </div>

@@ -27,6 +27,12 @@ export class ElasticsearchService {
       log: "trace"
     });
   }
+  isAvailable(): any {
+    return this.client.ping({
+      requestTimeout: 3000,
+      body: "Data"
+    });
+  }
   create(): any {
     return this.client.bulk(
       {
@@ -49,8 +55,8 @@ export class ElasticsearchService {
           }
         ]
       },
-      function(err, resp) {
-        console.log(err, resp);
+      (err, resp) => {
+        this.retrive();
       }
     );
   }
@@ -77,8 +83,14 @@ export class ElasticsearchService {
         id: 1
       },
       (err, resp) => {
-        this.store.dispatch(new Actions.retrieveData(resp._source));
-        this.store.select("appData").subscribe();
+        if (err) {
+          console.log("mistake");
+          this.create();
+        } else {
+          console.log("connected");
+          this.store.dispatch(new Actions.retrieveData(resp._source));
+          this.store.select("appData").subscribe();
+        }
       }
     );
   }

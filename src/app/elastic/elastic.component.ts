@@ -21,18 +21,33 @@ export class ElasticComponent implements OnInit {
   isEdit: boolean = false;
   currentEdit: any;
   currentId: number;
+  isConnected = false;
+  status: string;
 
   constructor(
     private store: Store<AppState>,
     private es: ElasticsearchService,
     private fb: FormBuilder,
     private cdRef: ChangeDetectorRef
-  ) {}
+  ) {
+    this.isConnected = false;
+  }
   ngOnInit() {
-    this.es.retrive();
-    this.store.select("appData").subscribe(data => {
-      this.l_state = data.users;
-    });
+    this.es.isAvailable().then(
+      () => {
+        this.status = "OK";
+        this.isConnected = true;
+        this.es.retrive();
+        this.store.select("appData").subscribe(data => {
+          this.l_state = data.users;
+        });
+      },
+      error => {
+        this.status = "ERROR";
+        this.isConnected = false;
+        console.error("Server is down", error);
+      }
+    );
     this.initForm();
   }
   initForm() {
@@ -46,7 +61,10 @@ export class ElasticComponent implements OnInit {
   }
   initEdit(item) {
     this.editForm = this.fb.group({
-      firstName: [item.info.first_name, [Validators.required, Validators.pattern(/[A-z]/)]],
+      firstName: [
+        item.info.first_name,
+        [Validators.required, Validators.pattern(/[A-z]/)]
+      ],
       lastName: [item.info.last_name],
       birth: [item.info.birth],
       mobile: [item.info.mobile],
@@ -95,15 +113,12 @@ export class ElasticComponent implements OnInit {
     this.editForm.reset();
     this.isEdit = false;
   }
-  createBtn: any = () => {
-    this.es.create();
-  };
   retrieveBtn: any = () => {
     const retr = this.es.retrive();
     console.log(retr);
   };
   storeBTN: any = () => {
-    console.log(this.l_state)
+    console.log(this.l_state);
   };
   deleteBtn: any = id => {
     this.l_state = this.l_state.filter(item => item.id !== id);
