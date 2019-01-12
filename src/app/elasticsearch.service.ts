@@ -27,12 +27,12 @@ export class ElasticsearchService {
       log: "trace"
     });
   }
-  isAvailable(): any {
+  isAvailable = (): any => {
     return this.client.ping({
       requestTimeout: 3000,
-      body: "Data"
+      body: "Hello"
     });
-  }
+  };
   create(): any {
     return this.client.bulk(
       {

@@ -1,6 +1,10 @@
 import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 import { ElasticsearchService } from "../elasticsearch.service";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import {
+  FormGroup,
+  FormBuilder,
+  Validators
+} from "@angular/forms";
 
 import { Store } from "@ngrx/store";
 import { AppState } from "../store/app.state";
@@ -23,6 +27,8 @@ export class ElasticComponent implements OnInit {
   currentId: number;
   isConnected = false;
   status: string;
+  toggleText: string = "Show Data";
+  validBirth: boolean = false;
 
   constructor(
     private store: Store<AppState>,
@@ -53,9 +59,25 @@ export class ElasticComponent implements OnInit {
   initForm() {
     this.Form = this.fb.group({
       firstName: [null, [Validators.required, Validators.pattern(/[A-z]/)]],
-      lastName: [null],
-      birth: [null],
-      mobile: [null],
+      lastName: [null, [Validators.required, Validators.pattern(/[A-z]/)]],
+      birth: [
+        null,
+        [
+          Validators.required,
+          Validators.pattern(
+            /^\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.(19[5-9][0-9]|20[0-1][0-9])\s*$/
+          )
+        ]
+      ],
+      mobile: [
+        null,
+        [
+          Validators.required,
+          Validators.pattern(
+            /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
+          )
+        ]
+      ],
       email: [null, [Validators.required, Validators.email]]
     });
   }
@@ -65,9 +87,28 @@ export class ElasticComponent implements OnInit {
         item.info.first_name,
         [Validators.required, Validators.pattern(/[A-z]/)]
       ],
-      lastName: [item.info.last_name],
-      birth: [item.info.birth],
-      mobile: [item.info.mobile],
+      lastName: [
+        item.info.last_name,
+        [Validators.required, Validators.pattern(/[A-z]/)]
+      ],
+      birth: [
+        item.info.birth,
+        [
+          Validators.required,
+          Validators.pattern(
+            /^\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.(19[5-9][0-9]|20[0-1][0-9])\s*$/
+          )
+        ]
+      ],
+      mobile: [
+        item.info.mobile,
+        [
+          Validators.required,
+          Validators.pattern(
+            /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
+          )
+        ]
+      ],
       email: [item.info.email, [Validators.required, Validators.email]]
     });
   }
@@ -87,9 +128,14 @@ export class ElasticComponent implements OnInit {
           }
         })
     );
-    this.l_state.push(this.formArr);
-    this.es.update(this.l_state);
-    this.Form.reset();
+    this.validBirth = this.validateBirth(this.Form.value.birth);
+    if (this.validBirth === false) {
+      return;
+    } else {
+      this.l_state.push(this.formArr);
+      this.es.update(this.l_state);
+      this.Form.reset();
+    }
   }
   onEdit() {
     const controls = this.editForm.controls;
@@ -107,19 +153,18 @@ export class ElasticComponent implements OnInit {
           }
         })
     );
+    this.validBirth = this.validateBirth(this.editForm.value.birth);
+    if(this.validBirth === false){
+      return;
+    }
+    else{
     this.l_state = this.l_state.filter(item => item.id !== this.editArr.id);
     this.l_state.push(this.editArr);
     this.es.update(this.l_state);
     this.editForm.reset();
     this.isEdit = false;
+    }
   }
-  retrieveBtn: any = () => {
-    const retr = this.es.retrive();
-    console.log(retr);
-  };
-  storeBTN: any = () => {
-    console.log(this.l_state);
-  };
   deleteBtn: any = id => {
     this.l_state = this.l_state.filter(item => item.id !== id);
     this.es.update(this.l_state);
@@ -127,10 +172,24 @@ export class ElasticComponent implements OnInit {
   toggleData: any = () => {
     if (this.showData === false) {
       this.showData = true;
+      this.toggleText = "Hide Data";
     } else {
       this.showData = false;
+      this.toggleText = "Show Data";
     }
   };
+  validateBirth(edit) {
+    const value = edit;
+    const arr = value.split(".");
+    const str = arr[2] + "." + arr[1] + "." + arr[0];
+    const date = Date.parse(str);
+    let diff = Date.now() - date;
+    if (diff < 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
   ngAfterViewChecked() {
     if (this.showData === true) {
       if (this.l_state.length > 0) {

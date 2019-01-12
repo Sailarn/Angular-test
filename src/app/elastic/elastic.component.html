@@ -3,26 +3,25 @@
   <div class="container">
     <form action="javascript:void()" [formGroup]="Form" (submit)="onSubmit()">
       <label for="first-name">First Name</label>
-      <input type="text" id="first-name" formControlName="firstName" />
+      <input type="text" id="first-name" formControlName="firstName">
       <label for="last-name">Last Name</label>
       <input type="text" id="last-name" formControlName="lastName" />
       <label for="birth">Date</label>
-      <input type="date" formControlName="birth" />
+      <input type="text" formControlName="birth">
+      <span *ngIf="Form.controls.birth.invalid && Form.controls.birth.touched">Example: 24.10.1997</span>
       <label for="mobile">Mobile</label>
       <input type="number" formControlName="mobile" />
       <label for="email">Email</label>
       <input type="text" formControlName="email" />
-      <button type="submit">Send</button>
+      <button type="submit" [disabled]="!Form.valid">Send</button>
     </form>
   </div>
-  <button (click)="retrieveBtn()">Retrieve</button>
-  <button (click)="storeBTN()">Store</button>
-  <button (click)="toggleData()">Show Data</button>
+  <button (click)="toggleData()">{{toggleText}}</button>
   <div *ngIf="showData">
     <div *ngIf="!isEmpty; else empty">
       <h1>Data:</h1>
       <ul>
-        <li *ngFor="let item of this.l_state">
+        <li *ngFor="let item of l_state">
           <h3>User id: {{ item.id }}</h3>
           <ul>
             <li>First Name: {{ item.info.first_name }}</li>
@@ -46,12 +45,12 @@
       <label for="last-name">Last Name</label>
       <input type="text" id="last-name" formControlName="lastName" />
       <label for="birth">Date</label>
-      <input type="date" formControlName="birth" />
+      <input type="text" formControlName="birth" />
       <label for="mobile">Mobile</label>
       <input type="number" formControlName="mobile" />
       <label for="email">Email</label>
       <input type="text" formControlName="email" />
-      <button type="submit">Send</button>
+      <button type="submit" [disabled]="!editForm.valid">Send</button>
     </form>
     <button id="cancel" (click)="cancelEditing()">Cancel</button>
   </div>
