@@ -1,22 +1,70 @@
 <h1>Server status: {{ status }}</h1>
 <div class="app" *ngIf="this.isConnected">
   <div class="container">
-    <form action="javascript:void()" [formGroup]="Form" (submit)="onSubmit()">
-      <label for="first-name">First Name</label>
-      <input type="text" id="first-name" formControlName="firstName">
-      <label for="last-name">Last Name</label>
-      <input type="text" id="last-name" formControlName="lastName" />
-      <label for="birth">Date</label>
-      <input type="text" formControlName="birth">
-      <span *ngIf="Form.controls.birth.invalid && Form.controls.birth.touched">Example: 24.10.1997</span>
-      <label for="mobile">Mobile</label>
-      <input type="number" formControlName="mobile" />
-      <label for="email">Email</label>
-      <input type="text" formControlName="email" />
-      <button type="submit" [disabled]="!Form.valid">Send</button>
+    <form action="javascript:void()" [formGroup]="Form">
+      <mat-card class="container">
+        <mat-form-field class="input">
+          <input
+            matInput
+            placeholder="First Name"
+            id="first-name"
+            formControlName="firstName"
+          />
+        </mat-form-field>
+        <mat-form-field class="input">
+          <input
+            matInput
+            placeholder="Last Name"
+            id="last-name"
+            formControlName="lastName"
+          />
+        </mat-form-field>
+        <mat-form-field class="input">
+          <input
+            matInput
+            formControlName="birth"
+            [min]="minDate"
+            [max]="maxDate"
+            [matDatepicker]="picker"
+            placeholder="Date of birth (Month/Day/Year)"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field class="input">
+          <input
+            type="tel"
+            matInput
+            placeholder="Telephone"
+            formControlName="mobile"
+            ngxPhoneMask
+          />
+        </mat-form-field>
+        <mat-form-field class="input">
+          <input
+            matInput
+            placeholder="Enter your email"
+            formControlName="email"
+          />
+        </mat-form-field>
+        <button
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="onSubmit()"
+          [disabled]="!Form.valid"
+        >
+          Send
+        </button>
+      </mat-card>
     </form>
   </div>
-  <button (click)="toggleData()">{{toggleText}}</button>
+  <button mat-raised-button color="warn" (click)="toggleData()">
+    {{ toggleText }}
+  </button>
   <div *ngIf="showData">
     <div *ngIf="!isEmpty; else empty">
       <h1>Data:</h1>
@@ -27,31 +75,96 @@
             <li>First Name: {{ item.info.first_name }}</li>
             <li>Last Name: {{ item.info.last_name }}</li>
             <li>Date of birth: {{ item.info.birth }}</li>
-            <li>Phone number: {{ item.info.mobile }}</li>
-            <li>Email Adress: {{ item.info.email }}</li>
+            <li>
+              Phone number:
+              <a href="tel: {{ item.info.mobile }}">{{ item.info.mobile }}</a>
+            </li>
+            <li>
+              Email Adress:
+              <a href="mailto: {{ item.info.email }}">{{ item.info.email }}</a>
+            </li>
             <li>Was created: {{ item.info.created }}</li>
           </ul>
-          <button (click)="deleteBtn(item.id)">Delete</button>
-          <button (click)="editBtn(item.id)">Edit</button>
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="deleteBtn(item.id)"
+          >
+            Delete
+          </button>
+          <button mat-raised-button color="accent" (click)="editBtn(item.id)">
+            Edit
+          </button>
         </li>
       </ul>
     </div>
     <ng-template #empty> No data to retrieve </ng-template>
   </div>
   <div *ngIf="isEdit" class="editForm">
-    <form action="javascript:void()" [formGroup]="editForm" (submit)="onEdit()">
-      <label for="first-name">First Name</label>
-      <input type="text" id="first-name" formControlName="firstName" />
-      <label for="last-name">Last Name</label>
-      <input type="text" id="last-name" formControlName="lastName" />
-      <label for="birth">Date</label>
-      <input type="text" formControlName="birth" />
-      <label for="mobile">Mobile</label>
-      <input type="number" formControlName="mobile" />
-      <label for="email">Email</label>
-      <input type="text" formControlName="email" />
-      <button type="submit" [disabled]="!editForm.valid">Send</button>
+    <form action="javascript:void()" [formGroup]="editForm">
+      <mat-card class="container editForm">
+        <mat-form-field class="input">
+          <input
+            matInput
+            placeholder="First Name"
+            id="first-name"
+            formControlName="firstName"
+          />
+        </mat-form-field>
+        <mat-form-field class="input">
+          <input
+            matInput
+            placeholder="Last Name"
+            id="last-name"
+            formControlName="lastName"
+          />
+        </mat-form-field>
+        <mat-form-field class="input">
+          <input
+            matInput
+            formControlName="birth"
+            [min]="minDate"
+            [max]="maxDate"
+            [matDatepicker]="picker"
+            placeholder="Date of birth (Month/Day/Year)"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field class="input">
+          <input
+            type="tel"
+            matInput
+            placeholder="Telephone"
+            formControlName="mobile"
+            ngxPhoneMask
+          />
+        </mat-form-field>
+        <mat-form-field class="input">
+          <input
+            matInput
+            placeholder="Enter your email"
+            formControlName="email"
+          />
+        </mat-form-field>
+        <div class="edit-buttons">
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            (click)="onEdit()"
+            [disabled]="!editForm.valid"
+          >
+            Send
+          </button>
+          <button mat-raised-button id="cancel" (mousedown)="cancelEditing()">
+            Cancel
+          </button>
+        </div>
+      </mat-card>
     </form>
-    <button id="cancel" (click)="cancelEditing()">Cancel</button>
   </div>
 </div>

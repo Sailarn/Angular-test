@@ -3,42 +3,30 @@ form
     flex-direction: column
     justify-content: center
     align-items: center
-    border: 1px solid gray
-    width: 500px
-    margin: 20px
-    padding: 10px
-    input
-        width: 200px
-        padding: 5px
-        margin: 10px 0
     .ng-invalid
         border-color: red !important
     .ng-valid
         border-color: green !important
     .ng-untouched
         border-color: initial !important
+.input
+    width: 300px
 button
-    width: 100px
-    height: 25px
-    background-color: black
-    color: orange
-    border: 0
-    outline: 0
     margin: 5px
-    cursor: pointer
+.edit-buttons
+    display: flex
+    width: 200px
+    justify-content: space-between
 .container
     width: 100%
     display: flex
     justify-content: center
     align-items: center
+    flex-direction: column
 .editForm
+    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)
+    width: 500px
     position: fixed
     top: 50%
     left: 50%
     transform: translate(-50%, -50%)
-    form
-        background-color: gray
-    #cancel
-        position: absolute
-        top: 15px
-        right: 15px
